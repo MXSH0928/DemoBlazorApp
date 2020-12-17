@@ -129,9 +129,10 @@
         {
             List<TableCell> cells = new List<TableCell>();
 
-            var props = obj.GetType().GetProperties();
+            // var props = obj.GetType().GetProperties();
+            var props = obj.GetType().GetSortedProperties().ToList();
 
-            for (var j = 0; j < props.Length; j++)
+            for (var j = 0; j < props.Count; j++)
             {
                 var prop = props[j];
                 var cell = new TableCell
@@ -165,5 +166,28 @@
             TableRow row = new TableRow { Index = index, Cells = obj.ToTableCells() };
             return row;
         }
+
+        /// <summary>
+        /// The get sorted properties.
+        /// </summary>
+        /// <param name="t">
+        /// The t.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IOrderedEnumerable{T}"/>.
+        /// </returns>
+        public static IOrderedEnumerable<PropertyInfo> GetSortedProperties(this Type t)
+        {
+            return t
+                .GetProperties()
+                .OrderBy(p => ((OrderAttribute)p.GetCustomAttributes(typeof(OrderAttribute), false)[0]).Order);
+        }
+
+        /* public static IOrderedEnumerable<PropertyInfo> GetSortedProperties<T>()
+        {
+            return typeof(T)
+                .GetProperties()
+                .OrderBy(p => ((OrderAttribute)p.GetCustomAttributes(typeof(OrderAttribute), false)[0]).Order);
+        } */
     }
 }

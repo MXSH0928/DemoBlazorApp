@@ -125,7 +125,8 @@
         {
             var myTable = new DynamicTable();
 
-            var props = typeof(T).GetProperties().ToList();
+            // var props = typeof(T).GetProperties().ToList();
+            var props = typeof(T).GetSortedProperties().ToList();
 
             for (var i = 0; i < props.Count; i++)
             {
@@ -190,7 +191,7 @@
             {
                 var cell = row.Cells.FirstOrDefault(c => c.ColumnName == propertyInfo.Name);
                 
-                if(cell != null)
+                if (cell != null)
                 {
                     var newValue = Convert.ChangeType(cell.Value, propertyInfo.PropertyType);
                     propertyInfo.SetValue(obj, newValue, null);
