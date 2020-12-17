@@ -1,0 +1,41 @@
+﻿@inject StateContainer StateContainer
+@implements IDisposable
+
+<h3>Component 1</h3>
+
+<p>StateContainer.Property: <b>@StateContainer.Property</b></p>
+
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Type message here" @bind-value="@message"
+           aria-label="Recipient's username" aria-describedby="button-addon2">
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" id="btnSave1" @onclick="ChangePropertyValue">
+            <span class="oi oi-location"></span> Send
+        </button>
+    </div>
+</div>
+
+
+@code {
+
+    private string message = "Hello World!";
+
+    protected override void OnInitialized()
+    {
+        /* ComponentBase.StateHasChanged = Notifies the component that its state has changed.
+             When applicable, this will cause the component to be re-rendered.*/
+        StateContainer.OnChange += StateHasChanged;
+    }
+
+    private void ChangePropertyValue()
+    {
+        // StateContainer.SetProperty($"New value set in Component 1 {DateTime.Now}");
+        StateContainer.SetProperty($"{DateTime.Now} {nameof(Component1)} => {message}");
+    }
+
+    public void Dispose()
+    {
+        StateContainer.OnChange -= StateHasChanged;
+    }
+
+}

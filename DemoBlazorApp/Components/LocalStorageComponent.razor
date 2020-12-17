@@ -1,0 +1,39 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<h3>Local Storage Component</h3>
+
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Type message here" @bind-value="@writeValue"
+           aria-label="Recipient's username" aria-describedby="button-addon2">
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon3" @onclick="@SaveAsync">
+            <span class="oi oi-pencil"></span> Write to local storage
+        </button>
+    </div>
+</div>
+
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Type message here" @bind-value="@readValue"
+           aria-label="Recipient's username" aria-describedby="button-addon2">
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" id="btnReadFromLocalStorage" @onclick="@GetAsync">
+            <span class="oi oi-book"></span> Read from local storage
+        </button>
+    </div>
+</div>
+
+    @code {
+
+        private string writeValue = "Hello World!";
+        private string readValue = string.Empty;
+
+        protected async Task SaveAsync()
+        {
+            await LocalStorage.SetItemAsync("message", writeValue);
+        }
+
+        protected async Task GetAsync()
+        {
+            readValue = await LocalStorage.GetItemAsync<string>("message");
+        }
+    }
