@@ -43,13 +43,22 @@
         /// </param>
         private void OnTableSelection(ChangeEventArgs obj)
         {
-            var id = obj.Value is null ? 0 : Convert.ToInt32(obj.Value);
-            this.SelectedTable = this.tables.FirstOrDefault(t => t.Id == id);
-
-            // ToDo: Throw exception
-            if (this.SelectedTable != null && this.SelectedTable.Id == 0)
+            try
             {
-                Console.WriteLine($"Unable to set {nameof(this.SelectedTable)} value.");
+                // ToDo: use TryParse
+                var id = obj.Value is null ? 0 : Convert.ToInt32(obj.Value);
+                this.SelectedTable = this.tables.FirstOrDefault(t => t.Id == id);
+
+                // ToDo: Throw exception
+                if (this.SelectedTable != null && this.SelectedTable.Id == 0)
+                {
+                    Console.WriteLine($"Unable to set {nameof(this.SelectedTable)} value.");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
             }
         }
     }

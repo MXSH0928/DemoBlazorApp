@@ -58,7 +58,7 @@
         /// The get prop value.
         /// </summary>
         /// <param name="obj">
-        /// The obj.
+        /// The object.
         /// </param>
         /// <param name="name">
         /// The name.
@@ -66,7 +66,7 @@
         /// <returns>
         /// The <see cref="object"/>.
         /// </returns>
-        public static Object GetPropValue(this Object obj, String name)
+        public static object GetPropValue(this object obj, string name)
         {
             foreach (string part in name.Split('.'))
             {
@@ -93,7 +93,7 @@
         /// The get prop value.
         /// </summary>
         /// <param name="obj">
-        /// The obj.
+        /// The object.
         /// </param>
         /// <param name="name">
         /// The name.
@@ -103,7 +103,7 @@
         /// <returns>
         /// The <see cref="T"/>.
         /// </returns>
-        public static T GetPropValue<T>(this Object obj, String name)
+        public static T GetPropValue<T>(this object obj, string name)
         {
             object retval = GetPropValue(obj, name);
 
@@ -178,6 +178,7 @@
         /// </returns>
         public static IOrderedEnumerable<PropertyInfo> GetSortedProperties(this Type t)
         {
+            // ToDo: Handle props without "OrderAttribute"
             return t
                 .GetProperties()
                 .OrderBy(p => ((OrderAttribute)p.GetCustomAttributes(typeof(OrderAttribute), false)[0]).Order);

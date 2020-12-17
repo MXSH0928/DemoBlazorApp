@@ -1,32 +1,37 @@
 ﻿@using System.Data
-<h3>Table Component</h3>
 
-@if (table != null)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                @foreach (var c in table.Columns)
-                {
-                    <th>@c.Name</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-
-            @foreach (var row in table.Rows)
-            {
-                <tr @oninput="@(() => OnRowChange(row))">
-                    @foreach (var cell in row.Cells)
+<div class="card">
+    <div class="card-header">
+        Table Component: @selectedTableType.Name
+    </div>
+    <div class="card-body">
+        @if (table != null)
+        {
+            <table class="table">
+                <thead>
+                <tr>
+                    @foreach (var c in table.Columns)
                     {
-                    <td>
-                        <input type="@cell.HtmlInputType" @bind-value="@cell.Value" @bind-value:event="oninput" />
-                        @*<input type="@cell.HtmlInputType" value="@cell.Value" />*@
-                    </td>
+                        <th>@c.Name</th>
                     }
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+                </thead>
+                <tbody>
 
+                @foreach (var row in table.Rows)
+                {
+                    <tr @oninput="@(() => OnRowChange(row))">
+                        @foreach (var cell in row.Cells)
+                        {
+                            <td>
+                                <input type="@cell.HtmlInputType" @bind-value="@cell.Value" @bind-value:event="oninput" class="form-control" />
+                                @*<input type="@cell.HtmlInputType" value="@cell.Value" />*@
+                            </td>
+                        }
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
