@@ -1,13 +1,13 @@
 ﻿@using System.Data
 
-<div class="card">
+<div class="card shadow-sm">
     <div class="card-header">
         Table Component: @selectedTableType.Name
     </div>
     <div class="card-body">
         @if (table != null)
         {
-            <table class="table">
+            <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
                     @foreach (var c in table.Columns)
