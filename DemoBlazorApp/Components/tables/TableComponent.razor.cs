@@ -2,7 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.ComponentModel.Design.Serialization;
     using System.Data;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
 
@@ -140,7 +143,7 @@
                     {
                         Index = j,
                         ColumnName = prop.Name,
-                        Value = GetPropValue(item, prop.Name),
+                        Value = GetPropValue(item, prop.Name).ToString(),
                         ValueType = prop.PropertyType
                     };
 
@@ -161,14 +164,20 @@
         /// </param>
         private void OnRowChange(TableRow row)
         {
+            
             var obj = this.table.Rows.FirstOrDefault(r => r.Index == row.Index);
 
             if (obj != null && this.selectedTableType != null)
             {
                 if (this.selectedTableType.Name == nameof(TableOneModel))
                 {
-                    var x = this.ConvertTableRowToType<TableOneModel>(row);
-                    Console.WriteLine(x.Name);
+                    var updatedObject = this.ConvertTableRowToType<TableOneModel>(row);
+                    var index = this.table.Rows.IndexOf(row);
+
+                    if (index != -1)
+                    {
+                        this.table.Rows[index] = updatedObject.ToTableRow(); // ToDo: Create this ext method.
+                    }
                 }
             }
         }
@@ -182,7 +191,12 @@
             foreach (var propertyInfo in properties)
             {
                 var cell = row.Cells.FirstOrDefault(c => c.ColumnName == propertyInfo.Name);
-                propertyInfo.SetValue(obj, cell?.Value, null);
+                
+                if(cell != null)
+                {
+                    var newValue = Convert.ChangeType(cell.Value, propertyInfo.PropertyType);
+                    propertyInfo.SetValue(obj, newValue, null);
+                }
             }
 
             return (T)obj;
@@ -227,7 +241,7 @@
             /// <summary>
             /// Gets or sets the value.
             /// </summary>
-            public object Value { get; set; }
+            public string Value { get; set; }
 
             /// <summary>
             /// Gets or sets the value type.
