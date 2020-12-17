@@ -9,6 +9,7 @@
     using System.Linq;
     using System.Reflection;
 
+    using DemoBlazorApp.Library;
     using DemoBlazorApp.Models;
 
     using Microsoft.AspNetCore.Components;
@@ -134,28 +135,13 @@
             for (var i = 0; i < items.Count; i++)
             {
                 var item = items[i];
-                var row = new TableRow { Index = i };
-
-                for (var j = 0; j < props.Count; j++)
-                {
-                    var prop = props[j];
-                    var cell = new TableCell
-                    {
-                        Index = j,
-                        ColumnName = prop.Name,
-                        Value = GetPropValue(item, prop.Name).ToString(),
-                        ValueType = prop.PropertyType
-                    };
-
-                    row.Cells.Add(cell);
-                }
-
+                var row = item.ToTableRow(i);
                 myTable.Rows.Add(row);
             }
 
             return myTable;
         }
-
+        
         /// <summary>
         /// The on row change.
         /// </summary>
@@ -164,7 +150,6 @@
         /// </param>
         private void OnRowChange(TableRow row)
         {
-            
             var obj = this.table.Rows.FirstOrDefault(r => r.Index == row.Index);
 
             if (obj != null && this.selectedTableType != null)
@@ -176,12 +161,25 @@
 
                     if (index != -1)
                     {
-                        this.table.Rows[index] = updatedObject.ToTableRow(); // ToDo: Create this ext method.
+                        Console.WriteLine($"Name: {updatedObject.Name}");
+                        this.table.Rows[index] = updatedObject.ToTableRow(index);
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// The convert table row to type.
+        /// </summary>
+        /// <param name="row">
+        /// The row.
+        /// </param>
+        /// <typeparam name="T">
+        /// The type.
+        /// </typeparam>
+        /// <returns>
+        /// The <see cref="T"/>.
+        /// </returns>
         private T ConvertTableRowToType<T>(TableRow row)
         {
             var type = typeof(T);
@@ -200,133 +198,6 @@
             }
 
             return (T)obj;
-        }
-
-        /// <summary>
-        /// The my table.
-        /// </summary>
-        private class DynamicTable
-        {
-            /// <summary>
-            /// Gets or sets the columns.
-            /// </summary>
-            public List<TableColumn> Columns { get; set; } = new List<TableColumn>();
-
-            /// <summary>
-            /// Gets or sets the rows.
-            /// </summary>
-            public List<TableRow> Rows { get; set; } = new List<TableRow>();
-        }
-
-        /// <summary>
-        ///     The table cell.
-        /// </summary>
-        private class TableCell
-        {
-            /// <summary>
-            /// The value type.
-            /// </summary>
-            private Type valueType;
-
-            /// <summary>
-            /// Gets or sets the header.
-            /// </summary>
-            public string ColumnName { get; set; }
-
-            /// <summary>
-            /// Gets or sets the index.
-            /// </summary>
-            public int Index { get; set; }
-
-            /// <summary>
-            /// Gets or sets the value.
-            /// </summary>
-            public string Value { get; set; }
-
-            /// <summary>
-            /// Gets or sets the value type.
-            /// </summary>
-            public Type ValueType
-            {
-                get => this.valueType;
-                set
-                {
-                    if (value != null)
-                    {
-                        this.valueType = value;
-                        this.HtmlInputType = this.GetHtmlInputType(value);
-                    }
-                }
-            }
-
-            /// <summary>
-            /// Gets or sets the html input type.
-            /// </summary>
-            public string HtmlInputType { get; set; } = "text";
-
-            /// <summary>
-            /// The get html input type.
-            /// </summary>
-            /// <param name="type">
-            /// The type.
-            /// </param>
-            /// <returns>
-            /// The <see cref="string"/>.
-            /// </returns>
-            public string GetHtmlInputType(Type type)
-            {
-                string result;
-
-                switch (type.Name.ToLower())
-                {
-                    case "string":
-                        result = "text";
-                        break;
-                    case "int32":
-                    case "int64":
-                    case "decimal":
-                    case "double":
-                        result = "number";
-                        break;
-                    default:
-                        result = "text";
-                        break;
-                }
-
-                return result;
-            }
-        }
-
-        /// <summary>
-        ///     The table column.
-        /// </summary>
-        private class TableColumn
-        {
-            /// <summary>
-            ///     Gets or sets the index.
-            /// </summary>
-            public int Index { get; set; }
-
-            /// <summary>
-            ///     Gets or sets the name.
-            /// </summary>
-            public string Name { get; set; }
-        }
-
-        /// <summary>
-        /// The table row.
-        /// </summary>
-        private class TableRow
-        {
-            /// <summary>
-            /// Gets or sets the cells.
-            /// </summary>
-            public List<TableCell> Cells { get; set; } = new List<TableCell>();
-
-            /// <summary>
-            /// Gets or sets the index.
-            /// </summary>
-            public int Index { get; set; }
         }
     }
 }

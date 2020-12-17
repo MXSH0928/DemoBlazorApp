@@ -4,8 +4,11 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Dynamic;
+    using System.Linq;
     using System.Reflection;
     using System.Text.Json;
+
+    using DemoBlazorApp.Models;
 
     /// <summary>
     /// The extensions.
@@ -50,29 +53,117 @@
 
             return (ExpandoObject)expando;
         }
-        
+
+        /// <summary>
+        /// The get prop value.
+        /// </summary>
+        /// <param name="obj">
+        /// The obj.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
         public static Object GetPropValue(this Object obj, String name)
         {
-            foreach (String part in name.Split('.'))
+            foreach (string part in name.Split('.'))
             {
-                if (obj == null) { return null; }
+                if (obj == null)
+                {
+                    return null;
+                }
 
                 Type type = obj.GetType();
                 PropertyInfo info = type.GetProperty(part);
-                if (info == null) { return null; }
+
+                if (info == null)
+                {
+                    return null;
+                }
 
                 obj = info.GetValue(obj, null);
             }
+
             return obj;
         }
 
+        /// <summary>
+        /// The get prop value.
+        /// </summary>
+        /// <param name="obj">
+        /// The obj.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// The <see cref="T"/>.
+        /// </returns>
         public static T GetPropValue<T>(this Object obj, String name)
         {
-            Object retval = GetPropValue(obj, name);
-            if (retval == null) { return default(T); }
+            object retval = GetPropValue(obj, name);
+
+            if (retval == null)
+            {
+                return default(T);
+            }
 
             // throws InvalidCastException if types are incompatible
             return (T)retval;
+        }
+
+        /// <summary>
+        /// The to table cells.
+        /// </summary>
+        /// <param name="obj">
+        /// The object.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IList{T}"/>.
+        /// </returns>
+        public static List<TableCell> ToTableCells(this object obj)
+        {
+            List<TableCell> cells = new List<TableCell>();
+
+            var props = obj.GetType().GetProperties();
+
+            for (var j = 0; j < props.Length; j++)
+            {
+                var prop = props[j];
+                var cell = new TableCell
+                               {
+                                   Index = j,
+                                   ColumnName = prop.Name,
+                                   Value = GetPropValue(obj, prop.Name).ToString(),
+                                   ValueType = prop.PropertyType
+                               };
+
+                cells.Add(cell);
+            }
+
+            return cells;
+        }
+
+        /// <summary>
+        /// The to table row.
+        /// </summary>
+        /// <param name="obj">
+        /// The object.
+        /// </param>
+        /// <param name="index">
+        /// The index.
+        /// </param>
+        /// <returns>
+        /// The <see cref="TableRow"/>.
+        /// </returns>
+        public static TableRow ToTableRow(this object obj, int index)
+        {
+            TableRow row = new TableRow { Index = index, Cells = obj.ToTableCells() };
+            return row;
         }
     }
 }
