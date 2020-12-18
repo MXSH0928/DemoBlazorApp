@@ -270,9 +270,12 @@
         /// <summary>
         /// The remove row.
         /// </summary>
-        private void RemoveRow()
+        /// <param name="row">
+        /// The row.
+        /// </param>
+        private void RemoveRow(TableRow row)
         {
-
+            this.table.Rows.Remove(row);
         }
 
         /// <summary>
