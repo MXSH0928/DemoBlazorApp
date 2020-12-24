@@ -10,6 +10,8 @@
 
     using DemoBlazorApp.Models;
 
+    using MoreLinq;
+
     /// <summary>
     /// The extensions.
     /// </summary>
@@ -131,17 +133,32 @@
 
             // var props = obj.GetType().GetProperties();
             var props = obj.GetType().GetSortedProperties().ToList();
-
+            
             for (var j = 0; j < props.Count; j++)
             {
                 var prop = props[j];
+                var rawAttributes = prop.GetCustomAttributes<HtmlInputAttribute>()?.ToList();
+
+                var inputAttributes = new Dictionary<string, object>();
+                
+                if (rawAttributes.Any() == false)
+                {
+                    Console.WriteLine("No input attributes found");
+                }
+                else
+                {
+                    var uniqueAttributes = rawAttributes.DistinctBy(a => a.Key);
+                    inputAttributes = uniqueAttributes.ToDictionary(a => a.Key, a => (object)a.Value);
+                }
+
                 var cell = new TableCell
                                {
                                    Index = j,
                                    ColumnName = prop.Name,
                                    Value = GetPropValue(obj, prop.Name).ToString(),
-                                   ValueType = prop.PropertyType
-                               };
+                                   ValueType = prop.PropertyType,
+                                   InputAttributes = inputAttributes
+                };
 
                 cells.Add(cell);
             }

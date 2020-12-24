@@ -1,6 +1,7 @@
 ﻿namespace DemoBlazorApp.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -49,6 +50,11 @@
         /// Gets or sets the html input type.
         /// </summary>
         public string HtmlInputType { get; set; } = "text";
+
+        /// <summary>
+        /// Gets or sets the input attributes.
+        /// </summary>
+        public Dictionary<string, object> InputAttributes { get; set; } = new Dictionary<string, object>();
 
         /// <summary>
         /// The get html input type.

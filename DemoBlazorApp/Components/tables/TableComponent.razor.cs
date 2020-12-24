@@ -189,7 +189,7 @@
                     }
                 }
 
-                if(this.selectedTableType.Name == nameof(TableMathModel))
+                if (this.selectedTableType.Name == nameof(TableMathModel))
                 {
                     var updatedObject = this.ConvertTableRowToType<TableMathModel>(row);
                     var index = this.table.Rows.IndexOf(row);

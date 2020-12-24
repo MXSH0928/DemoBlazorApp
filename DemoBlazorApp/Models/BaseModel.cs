@@ -1,5 +1,7 @@
 ﻿namespace DemoBlazorApp.Models
 {
+    using System.ComponentModel.DataAnnotations;
+
     using DemoBlazorApp.Library;
 
     /// <summary>
@@ -10,7 +12,10 @@
         /// <summary>
         /// Gets or sets the id.
         /// </summary>
+        [Key]
         [Order(1)]
+        [HtmlInput(key: "disabled", value: "disabled")]
+        [HtmlInput(key: "type", value: "number")]
         public int Id { get; set; }
 
         /// <summary>

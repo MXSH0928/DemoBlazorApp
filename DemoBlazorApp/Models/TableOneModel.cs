@@ -15,7 +15,8 @@
         /// <summary>
         /// Gets or sets the column one.
         /// </summary>
-        [Order(3)]
+        [Order]
+        [HtmlInput(key: "type", value: "text")]
         public string Email { get; set; }
     }
 }
