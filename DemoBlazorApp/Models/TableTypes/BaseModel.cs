@@ -1,8 +1,9 @@
 ﻿namespace DemoBlazorApp.Models
 {
     using System;
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
-
+    using System.Runtime.CompilerServices;
     using DemoBlazorApp.Library;
 
     /// <summary>
@@ -10,6 +11,23 @@
     /// </summary>
     public abstract class BaseModel
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            Console.WriteLine($"{nameof(OnPropertyChanged)} has been invoked by {name}");            
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        protected void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
         /// <summary>
         /// Gets or sets the id.
         /// </summary>
@@ -30,8 +48,7 @@
             if (action != null)
             {
                 action.Invoke();
-            }
-            
+            }            
         }
     }
 }

@@ -8,30 +8,15 @@
     /// <summary>
     /// The table math model.
     /// </summary>
-    public class TableMathModel : BaseModel, INotifyPropertyChanged
+    public class AddThreeNumbersModel : BaseModel
     {
         private int number1 = 0;
         private int number2 = 0;
         private int number3 = 0;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // Create the OnPropertyChanged method to raise the event
-        // The calling member's name will be used as the parameter.
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        public AddThreeNumbersModel()
         {
-            Console.WriteLine($"{nameof(OnPropertyChanged)} has been invoked by {name}");
-            GetTotal();
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        protected void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            PropertyChanged += (sender, r) => GetTotal();
         }
 
         /// <summary>

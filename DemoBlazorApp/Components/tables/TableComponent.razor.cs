@@ -67,21 +67,6 @@
         }
 
         /// <summary>
-        /// The get initial match table data.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="List{T}"/>.
-        /// </returns>
-        private List<TableMathModel> GetInitialMatchTableData()
-        {
-            return new List<TableMathModel>()
-                       {
-                        new TableMathModel() { Id = 1, Name = "First Calculation", Number1 = 1, Number2 = 2, Number3 = 3 },
-                        new TableMathModel() { Id = 2, Name = "Second Calculation", Number1 = 1, Number2 = 0, Number3 = 0 }
-                       };
-        }
-
-        /// <summary>
         /// The display table.
         /// </summary>
         private void DisplayTable()
