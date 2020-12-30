@@ -1,5 +1,6 @@
 ﻿namespace DemoBlazorApp.Models
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
 
     using DemoBlazorApp.Library;
@@ -23,5 +24,14 @@
         /// </summary>
         [Order(2)]
         public string Name { get; set; } = "Not available";
+
+        public virtual void UpdateModel(Action action)
+        {
+            if (action != null)
+            {
+                action.Invoke();
+            }
+            
+        }
     }
 }

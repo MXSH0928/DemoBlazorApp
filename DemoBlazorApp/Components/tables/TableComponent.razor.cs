@@ -213,6 +213,11 @@
                             continue;
                         }
 
+                        // ToDo: Find a better way
+                        if (cell.ColumnName.Equals("Total")) {
+                            continue;
+                        }
+
                         // var cellValue = cell.ValueType.Name.StartsWith("Int") && cell.Value.Trim() == string.Empty ? "0" : cell.Value.Trim();
                         var newValue = Convert.ChangeType(cell.Value, propertyInfo.PropertyType);
                         propertyInfo.SetValue(obj, newValue, null);
@@ -233,12 +238,10 @@
         /// </summary>
         private void AddRow()
         {
-            var newRow = new TableRow()
-            {
-                Index = this.table.Rows.Count + 1,
-                Cells = this.GenerateEmptyCells(this.table.Columns).ToList()
-            };
+            var newIndex = this.table.Rows.Count;
+            var obj = Activator.CreateInstance(this.selectedTableType.Type);
 
+            var newRow = obj?.ToTableRow(newIndex);
             this.table.Rows.Add(newRow);
         }
 
@@ -251,36 +254,6 @@
         private void RemoveRow(TableRow row)
         {
             this.table.Rows.Remove(row);
-        }
-
-        /// <summary>
-        /// The generate empty cells.
-        /// </summary>
-        /// <param name="columns">
-        /// The columns.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IList{T}"/>.
-        /// </returns>
-        private IList<TableCell> GenerateEmptyCells(List<TableColumn> columns)
-        {
-            var cells = new List<TableCell>();
-
-            foreach (var col in columns)
-            {
-                var value = col.ValueType.Name == "String" ? string.Empty : "0";
-
-                var cell = new TableCell()
-                               {
-                                   ValueType = col.ValueType,
-                                   ColumnName = col.Name,
-                                   Value = value,
-                               };
-
-                cells.Add(cell);
-            }
-
-            return cells;
         }
 
         private DynamicTable GetDynamicTable<T>(List<T> items)

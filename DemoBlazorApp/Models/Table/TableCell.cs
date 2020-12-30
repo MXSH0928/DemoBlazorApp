@@ -47,45 +47,8 @@
         }
 
         /// <summary>
-        /// Gets or sets the html input type.
-        /// </summary>
-        public string HtmlInputType { get; set; } = "text";
-
-        /// <summary>
         /// Gets or sets the input attributes.
         /// </summary>
         public Dictionary<string, object> InputAttributes { get; set; } = new Dictionary<string, object>();
-
-        /// <summary>
-        /// The get html input type.
-        /// </summary>
-        /// <param name="type">
-        /// The type.
-        /// </param>
-        /// <returns>
-        /// The <see cref="string"/>.
-        /// </returns>
-        public string GetHtmlInputType(Type type)
-        {
-            string result;
-
-            switch (type.Name.ToLower())
-            {
-                case "string":
-                    result = "text";
-                    break;
-                case "int32":
-                case "int64":
-                case "decimal":
-                case "double":
-                    result = "number";
-                    break;
-                default:
-                    result = "text";
-                    break;
-            }
-
-            return result;
-        }
     }
 }

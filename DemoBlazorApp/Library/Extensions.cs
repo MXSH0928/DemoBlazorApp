@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
     using System.Dynamic;
     using System.Linq;
     using System.Reflection;
@@ -127,7 +128,7 @@
         /// <returns>
         /// The <see cref="IList{T}"/>.
         /// </returns>
-        public static List<TableCell> ToTableCells(this object obj)
+        public static List<TableCell> ToTableCells(this object obj, int rowIndex = 0)
         {
             List<TableCell> cells = new List<TableCell>();
 
@@ -151,11 +152,19 @@
                     inputAttributes = uniqueAttributes.ToDictionary(a => a.Key, a => (object)a.Value);
                 }
 
+                var keyAttr = prop.GetCustomAttribute<KeyAttribute>();
+                
+                var cellValue = GetPropValue(obj, prop.Name)?.ToString();
+
+                if (keyAttr != null) {
+                    cellValue = rowIndex.ToString();
+                }
+
                 var cell = new TableCell
                                {
                                    Index = j,
                                    ColumnName = prop?.Name,
-                                   Value = GetPropValue(obj, prop.Name)?.ToString(),
+                                   Value = cellValue,
                                    ValueType = prop?.PropertyType,
                                    InputAttributes = inputAttributes ?? new Dictionary<string, object>()
                 };
@@ -180,7 +189,7 @@
         /// </returns>
         public static TableRow ToTableRow(this object obj, int index)
         {
-            TableRow row = new TableRow { Index = index, Cells = obj.ToTableCells() };
+            TableRow row = new TableRow { Index = index, Cells = obj.ToTableCells(index) };
             return row;
         }
 
