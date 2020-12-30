@@ -20,7 +20,15 @@
                 <tr>
                     @foreach (var c in table.Columns)
                     {
-                        <th>@c.Name</th>
+                        <th>
+                            @if (string.IsNullOrWhiteSpace(c.Description)) { 
+                                @c.Name
+                            }
+                            else
+                            {
+                                @c.Description
+                            }
+                        </th>
                     }
                     <th>
                         <input type="button" class="btn btn-link" value="Add" @onclick="AddRow">

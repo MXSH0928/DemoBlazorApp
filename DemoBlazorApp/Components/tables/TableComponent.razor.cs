@@ -99,7 +99,15 @@
             for (var i = 0; i < props.Count; i++)
             {
                 Console.WriteLine($"Column Index: {i}, Name: {props[i].Name}, Type: {props[i].PropertyType.Name}");
-                myTable.Columns.Add(new TableColumn { Index = i, Name = props[i].Name, ValueType = props[i].PropertyType });
+
+                var description = props[i].GetCustomAttribute<DescriptionAttribute>()?.Description;
+
+                myTable.Columns.Add(new TableColumn {
+                    Index = i,
+                    Name = props[i].Name,
+                    Description = description ?? string.Empty,
+                    ValueType = props[i].PropertyType
+                }); ;
             }
 
             var row = model.ToTableRow(0);

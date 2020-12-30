@@ -2,6 +2,7 @@
 {
     using DemoBlazorApp.Library;
     using System;
+    using System.ComponentModel;
 
     public class AddFourNumbersModel : BaseModel
     {
@@ -18,6 +19,7 @@
         /// Gets or sets the number 1.
         /// </summary>
         [Order]
+        [Description("Num 1")]
         [HtmlInput(key: "type", value: "number")]
         [HtmlInput(key: "min", value: "0")]
         [HtmlInput(key: "step", value: "10")]
@@ -35,6 +37,7 @@
         /// Gets or sets the number 2.
         /// </summary>
         [Order]
+        [Description("Num 2")]
         [HtmlInput(key: "type", value: "number")]
         public int Number2
         {
@@ -50,6 +53,7 @@
         /// Gets or sets the number 3.
         /// </summary>
         [Order]
+        [Description("Num 3")]
         [HtmlInput(key: "type", value: "number")]
         public int Number3
         {
@@ -62,6 +66,7 @@
         }
 
         [Order]
+        [Description("Num 4")]
         [HtmlInput(key: "type", value: "number")]
         public int Number4
         {
