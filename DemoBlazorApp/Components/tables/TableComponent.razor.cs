@@ -46,6 +46,9 @@
             }
         }
 
+        [Inject]
+        public ITableFactory TableFactory { get; set; }
+
         /// <summary>
         /// The get prop value.
         /// </summary>
@@ -90,64 +93,23 @@
 
             Console.WriteLine("Display Table: " + this.selectedTableType);
 
-            switch (this.selectedTableType.Name)
-            {
-                case nameof(TableOneModel):
+            // Target type
+            Type tt = selectedTableType.Type;
 
-                    var modelOneList = new List<TableOneModel>
-                                           {
-                                               new TableOneModel { Id = 1, Name = "John", Email = "test1@email.com" },
-                                               new TableOneModel { Id = 2, Name = "Doe", Email = "test2@email.com" }
-                                           };
+            this.TableFactory.ScanForTables(Assembly.GetExecutingAssembly());
 
-                    this.table = this.GetDynamicTable(modelOneList);
+            // var model =  typeof(TargetMethodObject).GetMethod("TargetMethod").MakeGenericMethod(targetType).Invoke(null, new object[] { argument });
+            // var x = this.TableFactory.GetType().GetMethod("Create").MakeGenericMethod(tt).Invoke(this.TableFactory,null);
+            
+            var model = Activator.CreateInstance(tt);
+            this.table = this.GetDynamicTable(model);
 
-                    break;
-                case nameof(TableTwoModel):
-
-                    var modelTwoList = new List<TableTwoModel>
-                                           {
-                                               new TableTwoModel
-                                                   {
-                                                       Id = 1, Name = "Mohammed", Phone = "2140000000", Note = "Nothing"
-                                                   },
-                                               new TableTwoModel
-                                                   {
-                                                       Id = 1,
-                                                       Name = "Test User",
-                                                       Phone = "9720000000",
-                                                       Note = "Some note"
-                                                   }
-                                           };
-
-                    this.table = this.GetDynamicTable(modelTwoList);
-
-                    break;
-                case nameof(TableMathModel):
-                    var data = this.GetInitialMatchTableData();
-                    this.table = this.GetDynamicTable(data);
-                    break;
-            }
         }
 
-        /// <summary>
-        /// The get my table.
-        /// </summary>
-        /// <param name="items">
-        /// The items.
-        /// </param>
-        /// <typeparam name="T">
-        /// The list item type.
-        /// </typeparam>
-        /// <returns>
-        /// The <see cref="DynamicTable"/>.
-        /// </returns>
-        private DynamicTable GetDynamicTable<T>(List<T> items)
+        private DynamicTable GetDynamicTable(object model)
         {
             var myTable = new DynamicTable();
-
-            // var props = typeof(T).GetProperties().ToList();
-            var props = typeof(T).GetSortedProperties().ToList();
+            var props = this.selectedTableType.Type.GetSortedProperties().ToList();
 
             for (var i = 0; i < props.Count; i++)
             {
@@ -155,12 +117,8 @@
                 myTable.Columns.Add(new TableColumn { Index = i, Name = props[i].Name, ValueType = props[i].PropertyType });
             }
 
-            for (var i = 0; i < items.Count; i++)
-            {
-                var item = items[i];
-                var row = item.ToTableRow(i);
-                myTable.Rows.Add(row);
-            }
+            var row = model.ToTableRow(0);
+            myTable.Rows.Add(row);
 
             return myTable;
         }
@@ -174,35 +132,17 @@
         private void OnRowChange(TableRow row)
         {
             var obj = this.table.Rows.FirstOrDefault(r => r.Index == row.Index);
+            var updatedObject = this.ConvertTableRowToType(row, this.selectedTableType.Type);
 
-            if (obj != null && this.selectedTableType != null)
+            var index = this.table.Rows.IndexOf(row);
+
+            if (index != -1)
             {
-                if (this.selectedTableType.Name == nameof(TableOneModel))
-                {
-                    var updatedObject = this.ConvertTableRowToType<TableOneModel>(row);
-                    var index = this.table.Rows.IndexOf(row);
-
-                    if (index != -1)
-                    {
-                        Console.WriteLine($"Name: {updatedObject.Name}");
-                        this.table.Rows[index] = updatedObject.ToTableRow(index);
-                    }
-                }
-
-                if (this.selectedTableType.Name == nameof(TableMathModel))
-                {
-                    var updatedObject = this.ConvertTableRowToType<TableMathModel>(row);
-                    var index = this.table.Rows.IndexOf(row);
-
-                    if (index != -1)
-                    {
-                        // Console.WriteLine($"Table Data: {JsonSerializer.Serialize(this.table)}");
-                        Console.WriteLine($"Name: {updatedObject.Name}");
-                        updatedObject.GetTotal();
-                        this.table.Rows[index] = updatedObject.ToTableRow(index);
-                    }
-                }
+                Console.WriteLine($"Name: {((BaseModel)updatedObject).Name}");
+                this.table.Rows[index] = updatedObject.ToTableRow(index);
             }
+
+            this.table.Rows.ForEach(r => r.Cells.ForEach(c => Console.WriteLine("New Value " + c.Value)));
         }
 
         /// <summary>
@@ -251,6 +191,41 @@
             }
 
             return (T)obj;
+        }
+
+        private object ConvertTableRowToType(TableRow row, Type type)
+        {
+            var obj = Activator.CreateInstance(type);
+            var properties = type.GetProperties();
+
+            foreach (var propertyInfo in properties)
+            {
+                try
+                {
+                    var cell = row.Cells.FirstOrDefault(c => c.ColumnName == propertyInfo.Name);
+
+                    if (cell != null)
+                    {
+                        // ToDo: Need input validation.
+                        if (cell.ValueType.Name.StartsWith("Int") && (decimal.TryParse(cell.Value, out var d) == false || d > 100))
+                        {
+                            Console.WriteLine($"Cell value is not in acceptable format: {cell.Value}");
+                            continue;
+                        }
+
+                        // var cellValue = cell.ValueType.Name.StartsWith("Int") && cell.Value.Trim() == string.Empty ? "0" : cell.Value.Trim();
+                        var newValue = Convert.ChangeType(cell.Value, propertyInfo.PropertyType);
+                        propertyInfo.SetValue(obj, newValue, null);
+                    }
+                }
+                catch (Exception e)
+                {
+                    // ToDo: try/catch to handle error: "System.FormatException: Input string was not in a correct format."
+                    Console.WriteLine(e);
+                }
+            }
+
+            return obj;
         }
 
         /// <summary>
@@ -306,6 +281,29 @@
             }
 
             return cells;
+        }
+
+        private DynamicTable GetDynamicTable<T>(List<T> items)
+        {
+            var myTable = new DynamicTable();
+
+            // var props = typeof(T).GetProperties().ToList();
+            var props = typeof(T).GetProperties().ToList();
+
+            for (var i = 0; i < props.Count; i++)
+            {
+                Console.WriteLine($"Column Index: {i}, Name: {props[i].Name}, Type: {props[i].PropertyType.Name}");
+                myTable.Columns.Add(new TableColumn { Index = i, Name = props[i].Name, ValueType = props[i].PropertyType });
+            }
+
+            for (var i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                var row = item.ToTableRow(i);
+                myTable.Rows.Add(row);
+            }
+
+            return myTable;
         }
     }
 }

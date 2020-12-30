@@ -154,10 +154,10 @@
                 var cell = new TableCell
                                {
                                    Index = j,
-                                   ColumnName = prop.Name,
-                                   Value = GetPropValue(obj, prop.Name).ToString(),
-                                   ValueType = prop.PropertyType,
-                                   InputAttributes = inputAttributes
+                                   ColumnName = prop?.Name,
+                                   Value = GetPropValue(obj, prop.Name)?.ToString(),
+                                   ValueType = prop?.PropertyType,
+                                   InputAttributes = inputAttributes ?? new Dictionary<string, object>()
                 };
 
                 cells.Add(cell);
@@ -198,7 +198,7 @@
             // ToDo: Handle props without "OrderAttribute"
             return t
                 .GetProperties()
-                .OrderBy(p => ((OrderAttribute)p.GetCustomAttributes(typeof(OrderAttribute), false)[0]).Order);
+                .OrderBy(p => ((OrderAttribute)p.GetCustomAttributes(typeof(OrderAttribute), true)[0]).Order);
         }
 
         /* public static IOrderedEnumerable<PropertyInfo> GetSortedProperties<T>()

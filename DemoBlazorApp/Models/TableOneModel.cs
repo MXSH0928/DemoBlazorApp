@@ -17,6 +17,6 @@
         /// </summary>
         [Order]
         [HtmlInput(key: "type", value: "text")]
-        public string Email { get; set; }
+        public string Email { get; set; } = "...@email.com";
     }
 }

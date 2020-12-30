@@ -41,7 +41,7 @@
                 if (value != null)
                 {
                     this.valueType = value;
-                    this.HtmlInputType = this.GetHtmlInputType(value);
+                    // this.HtmlInputType = this.GetHtmlInputType(value);
                 }
             }
         }

@@ -16,12 +16,12 @@
         [Order(1)]
         [HtmlInput(key: "disabled", value: "disabled")]
         [HtmlInput(key: "type", value: "number")]
-        public int Id { get; set; }
+        public int Id { get; set; } = 0;
 
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
         [Order(2)]
-        public string Name { get; set; }
+        public string Name { get; set; } = "Not available";
     }
 }
