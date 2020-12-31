@@ -1,4 +1,6 @@
-﻿namespace DemoBlazorApp.Components.tables
+﻿using DemoBlazorApp.Services;
+
+namespace DemoBlazorApp.Components.tables
 {
     using System;
     using System.Collections.Generic;
@@ -49,6 +51,9 @@
         [Inject]
         public ITableFactory TableFactory { get; set; }
 
+        [Inject]
+        public IMathService MathService { get; set; }
+
         /// <summary>
         /// The get prop value.
         /// </summary>
@@ -86,7 +91,7 @@
             // var model =  typeof(TargetMethodObject).GetMethod("TargetMethod").MakeGenericMethod(targetType).Invoke(null, new object[] { argument });
             // var x = this.TableFactory.GetType().GetMethod("Create").MakeGenericMethod(tt).Invoke(this.TableFactory,null);
             
-            var model = Activator.CreateInstance(tt);
+            var model = Activator.CreateInstance(tt, MathService);
             this.table = this.GetDynamicTable(model);
 
         }
@@ -188,7 +193,7 @@
 
         private object ConvertTableRowToType(TableRow row, Type type)
         {
-            var obj = Activator.CreateInstance(type);
+            var obj = Activator.CreateInstance(type, this.MathService);
             var properties = type.GetProperties();
 
             foreach (var propertyInfo in properties)
