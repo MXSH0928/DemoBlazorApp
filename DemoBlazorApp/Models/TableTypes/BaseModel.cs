@@ -9,7 +9,7 @@
     /// <summary>
     /// The base mode.
     /// </summary>
-    public abstract class BaseModel
+    public abstract class BaseModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
