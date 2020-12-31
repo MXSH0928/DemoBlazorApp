@@ -105,7 +105,7 @@
                 myTable.Columns.Add(new TableColumn {
                     Index = i,
                     Name = props[i].Name,
-                    Description = description ?? string.Empty,
+                    Description = description,
                     ValueType = props[i].PropertyType
                 }); ;
             }
