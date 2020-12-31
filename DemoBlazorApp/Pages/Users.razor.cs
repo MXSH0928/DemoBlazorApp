@@ -1,21 +1,42 @@
 ﻿using DemoBlazorApp.Models;
 using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DemoBlazorApp.Pages
 {
     public partial class Users
     {
-        List<User> users = new List<User> {
-        new User() { Id = 1, Name = "Mohammed", Email = "mhoque@email.com"},
-        new User() { Id = 2, Name = "John", Email = "john@email.com"},
-        };
+        private UserApiResponse userApiResponse;
 
-        public void OnUpdate(User user) {
-            Console.WriteLine($"User: {user.Name}");
+        [Inject]
+        public HttpClient Client { get; set; }
+        
+        protected override async Task OnInitializedAsync()
+        {
+            await FetchUsers();
+            await base.OnInitializedAsync();
+        }
+
+        private async Task FetchUsers()
+        {
+            try
+            {
+                await Task.Delay(3000);
+                var jsonStream = await this.Client.GetStreamAsync("/api?results=10");
+                userApiResponse = await JsonSerializer.DeserializeAsync<UserApiResponse>(jsonStream);
+            }
+            catch (Exception a)
+            {
+                Console.WriteLine(a);
+                // throw;
+            }
+        }
+
+        public void OnUpdate(Result user) {
+            Console.WriteLine($"User: {user.Email}");
         }
     }
 }
