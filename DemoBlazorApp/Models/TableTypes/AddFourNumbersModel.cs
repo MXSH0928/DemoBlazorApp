@@ -14,6 +14,7 @@
 
         public AddFourNumbersModel(IMathService service) : base(service)
         {
+            // ToDo: Assign handler from component & dispose (unsubscribe)
             // PropertyChanged += (sender, arg) => GetTotal();
         }
 
