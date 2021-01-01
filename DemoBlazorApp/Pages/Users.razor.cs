@@ -4,6 +4,7 @@ using System;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using DemoBlazorApp.Library;
 
 namespace DemoBlazorApp.Pages
 {
@@ -31,7 +32,7 @@ namespace DemoBlazorApp.Pages
             }
             catch (Exception a)
             {
-                Console.WriteLine(a);
+                Util.Log(a);
                 // throw;
             }
         }

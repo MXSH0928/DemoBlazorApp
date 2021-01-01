@@ -32,7 +32,7 @@
 
             for (var i = 0; i < props?.Count; i++)
             {
-                Console.WriteLine($"Column Index: {i}, Name: {props[i].Name}, Type: {props[i].PropertyType.Name}");
+                Util.Log($"Column Index: {i}, Name: {props[i].Name}, Type: {props[i].PropertyType.Name}");
 
                 var description = props[i].GetCustomAttribute<DescriptionAttribute>()?.Description;
 

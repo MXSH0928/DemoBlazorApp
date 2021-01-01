@@ -76,8 +76,8 @@
             {
                 return;
             }
-
-            Console.WriteLine("Display Table: " + this.selectedTableType);
+            
+            Util.Log("SelectedTableType: " + this.selectedTableType);
 
             // Target type
             Type tt = selectedTableType.Type;
@@ -108,13 +108,13 @@
 
             if (index != -1)
             {
-                Console.WriteLine($"Name: {((BaseModel)updatedObject).Name}");
+                Util.Log($"Name: {((BaseModel)updatedObject).Name}");
                 this.table.Rows[index] = updatedObject.ToTableRow(index);
             }
 
-            this.table.Rows.ForEach(r => r.Cells.ForEach(c => Console.WriteLine("New Value " + c.Value)));
+            this.table.Rows.ForEach(r => r.Cells.ForEach(c => Util.Log("New Value " + c.Value)));
         }
-
+        
         /// <summary>
         /// The convert table row to type.
         /// </summary>
@@ -144,7 +144,7 @@
                         // ToDo: Need input validation.
                         if (cell.ValueType.Name.StartsWith("Int")  && (decimal.TryParse(cell.Value, out var d) == false || d > 100))
                         {
-                            Console.WriteLine($"Cell value is not in acceptable format: {cell.Value}");
+                            Util.Log($"Cell value is not in acceptable format: {cell.Value}");
                             continue;
                         }
                         
@@ -156,7 +156,7 @@
                 catch (Exception e)
                 {
                     // ToDo: try/catch to handle error: "System.FormatException: Input string was not in a correct format."
-                    Console.WriteLine(e);
+                    Util.Log(e);
                 }
             }
 
@@ -179,7 +179,7 @@
                         // ToDo: Need input validation.
                         if (cell.ValueType.Name.StartsWith("Int") && (decimal.TryParse(cell.Value, out var d) == false || d > 100))
                         {
-                            Console.WriteLine($"Cell value is not in acceptable format: {cell.Value}");
+                            Util.Log($"Cell value is not in acceptable format: {cell.Value}");
                             continue;
                         }
 
@@ -196,7 +196,7 @@
                 catch (Exception e)
                 {
                     // ToDo: try/catch to handle error: "System.FormatException: Input string was not in a correct format."
-                    Console.WriteLine(e);
+                    Util.Log(e);
                 }
             }
 
@@ -235,7 +235,7 @@
 
             for (var i = 0; i < props.Count; i++)
             {
-                Console.WriteLine($"Column Index: {i}, Name: {props[i].Name}, Type: {props[i].PropertyType.Name}");
+                Util.Log($"Column Index: {i}, Name: {props[i].Name}, Type: {props[i].PropertyType.Name}");
                 myTable.Columns.Add(new TableColumn { Index = i, Name = props[i].Name, ValueType = props[i].PropertyType });
             }
 
