@@ -42,6 +42,7 @@ namespace DemoBlazorApp
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped<ITableService, TableService>();
             builder.Services.AddSingleton<IMathService, MathService>();
+            builder.Services.AddSingleton<IDynamicTableService, DynamicTableService>();
 
             await builder.Build().RunAsync();
         }

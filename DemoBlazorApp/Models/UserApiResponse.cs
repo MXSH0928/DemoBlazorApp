@@ -174,6 +174,11 @@
 
         [JsonPropertyName("last")]
         public string Last { get; set; }
+
+        public string GetFullNameWithTitle()
+        {
+            return $"{Title}. {First} {Last}";
+        }
     }
 
     public partial class Picture

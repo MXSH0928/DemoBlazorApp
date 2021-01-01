@@ -5,26 +5,43 @@
 @if (userApiResponse != null && userApiResponse.Results.Length > 0)
 {
 
-    <table class="table table-bordered">
+    <table class="table table-sm table-dark table-responsive">
         <thead>
             <tr>
-                <td>Id</td>
+                @*<td>Id</td>*@
+                <td>Image</td>
                 <td>Name</td>
                 <td>Email</td>
+                <td>Phone</td>
+                <td>City</td>
+                <td>Country</td>
             </tr>
         </thead>
         <tbody>
             @foreach (var user in userApiResponse.Results)
             {
                 <tr>
-                    <td>
+                    @*<td>
                         @user.Id.Value
+                    </td>*@
+                    <td>
+                        <img src="@user.Picture.Thumbnail" class="img-thumbnail"/>
                     </td>
                     <td>
-                        @($"{user.Name.First} {user.Name.Last}")
+                        @*@($"{user.Name.First} {user.Name.Last}")*@
+                        @user.Name.GetFullNameWithTitle()
                     </td>
                     <td>
                         @user.Email
+                    </td>
+                    <td>
+                        @user.Phone
+                    </td>
+                    <td>
+                        @user.Location.City
+                    </td>
+                    <td>
+                        @user.Location.Country
                     </td>
                 </tr>
             }

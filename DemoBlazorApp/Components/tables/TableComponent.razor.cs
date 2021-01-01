@@ -1,23 +1,16 @@
-﻿using DemoBlazorApp.Services;
-
-namespace DemoBlazorApp.Components.tables
+﻿namespace DemoBlazorApp.Components.tables
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.Design.Serialization;
-    using System.Data;
-    using System.Globalization;
     using System.Linq;
-    using System.Net.Http.Headers;
     using System.Reflection;
-    using System.Text.Json;
 
-    using DemoBlazorApp.Library;
-    using DemoBlazorApp.Models;
+    using Library;
+    using Models;
+    using Services;
 
     using Microsoft.AspNetCore.Components;
-
+    
     /// <summary>
     ///     The table.
     /// </summary>
@@ -53,6 +46,9 @@ namespace DemoBlazorApp.Components.tables
 
         [Inject]
         public IMathService MathService { get; set; }
+
+        [Inject]
+        public IDynamicTableService DynamicTableService { get; set; }
 
         /// <summary>
         /// The get prop value.
@@ -92,33 +88,9 @@ namespace DemoBlazorApp.Components.tables
             // var x = this.TableFactory.GetType().GetMethod("Create").MakeGenericMethod(tt).Invoke(this.TableFactory,null);
             
             var model = Activator.CreateInstance(tt, MathService);
-            this.table = this.GetDynamicTable(model);
 
-        }
-
-        private DynamicTable GetDynamicTable(object model)
-        {
-            var myTable = new DynamicTable();
-            var props = this.selectedTableType.Type.GetSortedProperties().ToList();
-
-            for (var i = 0; i < props.Count; i++)
-            {
-                Console.WriteLine($"Column Index: {i}, Name: {props[i].Name}, Type: {props[i].PropertyType.Name}");
-
-                var description = props[i].GetCustomAttribute<DescriptionAttribute>()?.Description;
-
-                myTable.Columns.Add(new TableColumn {
-                    Index = i,
-                    Name = props[i].Name,
-                    Description = description,
-                    ValueType = props[i].PropertyType
-                }); ;
-            }
-
-            var row = model.ToTableRow(0);
-            myTable.Rows.Add(row);
-
-            return myTable;
+            this.DynamicTableService.SelectedTableType = this.SelectedTableType;
+            this.table = this.DynamicTableService.GetDynamicTable(model);
         }
         
         /// <summary>
@@ -130,7 +102,7 @@ namespace DemoBlazorApp.Components.tables
         private void OnRowChange(TableRow row)
         {
             var obj = this.table.Rows.FirstOrDefault(r => r.Index == row.Index);
-            var updatedObject = this.ConvertTableRowToType(row, this.selectedTableType.Type);
+            var updatedObject = this.DynamicTableService.ConvertTableRowToType(row);
 
             var index = this.table.Rows.IndexOf(row);
 
@@ -191,7 +163,7 @@ namespace DemoBlazorApp.Components.tables
             return (T)obj;
         }
 
-        private object ConvertTableRowToType(TableRow row, Type type)
+        /*private object ConvertTableRowToType(TableRow row, Type type)
         {
             var obj = Activator.CreateInstance(type, this.MathService);
             var properties = type.GetProperties();
@@ -229,7 +201,7 @@ namespace DemoBlazorApp.Components.tables
             }
 
             return obj;
-        }
+        } */
 
         /// <summary>
         /// The add row.

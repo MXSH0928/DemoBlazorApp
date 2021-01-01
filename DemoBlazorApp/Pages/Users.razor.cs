@@ -24,7 +24,7 @@ namespace DemoBlazorApp.Pages
         {
             try
             {
-                await Task.Delay(3000);
+                await Task.Delay(2000);
                 this.Client.BaseAddress = new Uri("https://randomuser.me");
                 var jsonStream = await this.Client.GetStreamAsync("/api?results=10");
                 userApiResponse = await JsonSerializer.DeserializeAsync<UserApiResponse>(jsonStream);
