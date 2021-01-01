@@ -1,13 +1,12 @@
 namespace DemoBlazorApp.XUnitTest
 {
-    using System;
     using System.Linq;
-    using DemoBlazorApp.Library;
-    using DemoBlazorApp.Models;
-    using DemoBlazorApp.Services;
+    using Library;
+    using Models;
+    using Services;
     using Xunit;
 
-    public class UnitTest1
+    public class UnitTest
     {
         [Fact]
         public void ValidModelTotalCalculation()
